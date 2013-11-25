@@ -1,0 +1,10 @@
+/**
+ * WebMan Posts shortcode scripts
+ *
+ * @package     WebMan Amplifier
+ * @subpackage  Shortcodes
+ *
+ * @since       1.0
+ */
+
+jQuery(function(){var e=document.body.clientWidth;jQuery(window).on("resize orientationchange",function(){e=document.body.clientWidth});if(jQuery().isotope){var t=jQuery(".filter-this"),n=t.data("layout-mode");t.each(function(e){var t=jQuery(this),n=t.find("article:first-child").outerWidth();t.width("105%").find("article").width(n)});function r(){t.isotope({layoutMode:n});t.prev(".wm-filter").on("click","a",function(){var e=jQuery(this),t=e.data("filter");e.closest(".wm-posts-wrap").find(".filter-this").isotope({filter:t});e.parent("li").addClass("active").siblings("li").removeClass("active");return false})}function i(){t.isotope({layoutMode:n,transformsEnabled:false});t.prev(".wm-filter").on("click","a",function(){var e=jQuery(this),t=e.data("filter");e.closest(".wm-posts-wrap").find(".filter-this").isotope({filter:t,transformsEnabled:false});e.parent("li").addClass("active").siblings("li").removeClass("active");return false})}if("rtl"!=jQuery("html").attr("dir")){if(jQuery("html").hasClass("ie")){r()}else{t.imagesLoaded(function(){r()})}}else{jQuery.Isotope.prototype._positionAbs=function(e,t){return{right:e,top:t}};if(jQuery("html").hasClass("ie")){i()}else{t.imagesLoaded(function(){i()})}}}if(jQuery().masonry){var s=jQuery(".masonry-this");s.each(function(e){var t=jQuery(this),n=t.find("article:first-child").outerWidth();t.width("105%").find("article").width(n)});s.masonry()}if(jQuery().bxSlider){if(767<e){jQuery('[class*="scrollable-"').each(function(e){var t=jQuery(this).find(".wm-items-container"),n=t.children().eq(0).outerWidth(true),r=n-t.children().eq(0).outerWidth(),i=t.data("columns")?t.data("columns"):3,s=t.hasClass("stack")?i:1,o=t.data("time")&&999<t.data("time")?t.data("time"):4e3;t.bxSlider({auto:t.closest(".wm-posts-wrap").hasClass("scrollable-auto"),pause:o,minSlides:i,maxSlides:i,slideWidth:n,slideMargin:r,moveSlides:s,pager:false,autoHover:true,useCSS:false})})}}})
