@@ -4,7 +4,7 @@ Tags: webman, accordion, audio, button, call to action, column, content, module,
 Donate link: http://www.webmandesign.eu/
 Requires at least: 3.6
 Tested up to: 3.8
-Stable tag: trunk
+Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
