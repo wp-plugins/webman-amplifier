@@ -12,6 +12,6 @@ WebMan Amplifier amplifies functionality of WP themes. Provides custom post type
 == Description ==
 
 = IMPORTANT NOTICE =
-*Please note the plugin is not ready to be distributed publicly yet. I apologize for the inconvenience and hassle caused here on WordPress plugins repository. This is my first WordPress plugin submission, so I learn how it works on the way... Please check out the [WebMan website](http://www.webmandesign.eu/ "WebMan Themes and Plugins") for updates about the public release.*
+**Please note the plugin is not ready to be distributed publicly yet. I apologize for the inconvenience and hassle caused here on WordPress plugins repository. This is my first WordPress plugin submission, so I learn how it works on the way... Please check out the [WebMan website](http://www.webmandesign.eu/ "WebMan Themes and Plugins") for updates about the public release.**
 
-*No need to download the plugin now as it contains empty folder!*
+**No need to download the plugin now as it contains empty folder!**
