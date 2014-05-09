@@ -70,7 +70,7 @@ First, plese note that custom translation files inside the plugin's `languages` 
 
 == Other Notes ==
 
-= [Isotope](http://isotope.metafizzy.co/) =
+= Isotope =
 
 Please note that the plugin integrates an Isotope JavaScript filter. This script is released under GPL v3 licence for non-commercial use. If you inted to use the plugin for commercial purpose, please purchase the [Isotope licence](http://isotope.metafizzy.co/license.html).
 
