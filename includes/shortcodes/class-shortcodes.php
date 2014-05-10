@@ -517,9 +517,6 @@ if ( ! class_exists( 'WM_Shortcodes' ) ) {
 			 * @param   array $shortcodes
 			 */
 			public function add_shortcodes( $shortcodes = array() ) {
-				//Helper variables
-					$prefix_shortcode = $this->prefix_shortcode;
-
 				//If no shortcodes array set, use global shortcodes only
 					if ( empty( $shortcodes ) ) {
 						$shortcodes = (array) self::$codes['global'];
@@ -528,6 +525,9 @@ if ( ! class_exists( 'WM_Shortcodes' ) ) {
 				//If still no shortcodes to register, don't run the add_shortcode() function
 					if ( ! empty( $shortcodes ) ) {
 						foreach ( $shortcodes as $shortcode ) {
+							//Helper variables
+								$prefix_shortcode = $this->prefix_shortcode;
+
 							//Modifying $prefix_shortcode if set
 								if (
 										is_array( $shortcode )
