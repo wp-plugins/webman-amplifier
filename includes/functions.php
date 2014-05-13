@@ -177,12 +177,13 @@
 	/**
 	 * Get post meta option
 	 *
-	 * @since   1.0
+	 * @since    1.0
+	 * @version  1.0.5
 	 *
-	 * @param   string  $name    Meta option name.
-	 * @param   integer $post_id Specific post ID.
+	 * @param    string  $name    Meta option name.
+	 * @param    integer $post_id Specific post ID.
 	 *
-	 * @return  mixed
+	 * @return   mixed
 	 */
 	if ( ! function_exists( 'wma_meta_option' ) ) {
 		function wma_meta_option( $name, $post_id = null ) {
@@ -204,6 +205,13 @@
 
 				if ( ! trim( $name ) || ! $post_id ) {
 					return;
+				}
+
+			//Premature output
+				$output = apply_filters( WMAMP_HOOK_PREFIX . 'wma_meta_option' . '_output_premature', $output, $name, $post_id );
+
+				if ( $output ) {
+					return apply_filters( WMAMP_HOOK_PREFIX . 'wma_meta_option' . '_output', $output, $name, $post_id );
 				}
 
 			//Preparing output
@@ -228,11 +236,12 @@
 	/**
 	 * Taxonomy list
 	 *
-	 * @since   1.0
+	 * @since    1.0
+	 * @version  1.0.5
 	 *
-	 * @param   array $args
+	 * @param    array $args
 	 *
-	 * @return  array Array of taxonomy slug => name.
+	 * @return   array Array of taxonomy slug => name.
 	 */
 	if ( ! function_exists( 'wma_taxonomy_array' ) ) {
 		function wma_taxonomy_array( $args = array() ) {
@@ -290,7 +299,9 @@
 				}
 
 				//Sort alphabetically
-					asort( $output );
+					if ( ! $args['hierarchical'] ) {
+						asort( $output );
+					}
 
 			//Output
 				return apply_filters( WMAMP_HOOK_PREFIX . 'wma_taxonomy_array' . '_output', $output, $args );
@@ -302,12 +313,13 @@
 	/**
 	 * Posts list - returns array [post_name (slug) => name]
 	 *
-	 * @since   1.0
+	 * @since    1.0
+	 * @version  1.0.5
 	 *
-	 * @param   string $return    What field to return ('post_name' or 'ID').
-	 * @param   string $post_type What custom post type to return (defaults to "post").
+	 * @param    string $return    What field to return ('post_name' or 'ID').
+	 * @param    string $post_type What custom post type to return (defaults to "post").
 	 *
-	 * @return  array Array of post slug => name.
+	 * @return   array Array of post slug => name.
 	 */
 	if ( ! function_exists( 'wma_posts_array' ) ) {
 		function wma_posts_array( $return = 'post_name', $post_type = 'post' ) {
@@ -328,7 +340,7 @@
 				}
 
 			//Preparing output array
-				$output[''] = apply_filters( WMAMP_HOOK_PREFIX . 'posts_array_select_text', __( '- Select item -', 'wm_domain' ), $return, $post_type );
+				$output[''] = apply_filters( WMAMP_HOOK_PREFIX . 'wma_posts_array_select_text', __( '- Select item -', 'wm_domain' ), $return, $post_type );
 
 				if ( is_array( $posts ) && ! empty( $posts ) ) {
 					foreach ( $posts as $post ) {
@@ -352,20 +364,25 @@
 	/**
 	 * Pages list - returns array [post_name (slug) => name]
 	 *
-	 * @since   1.0
+	 * @since    1.0
+	 * @version  1.0.5
 	 *
-	 * @param   string $return What field to return ('post_name' or 'ID').
+	 * @param    string $return What field to return ('post_name' or 'ID').
 	 *
-	 * @return  array Array of page slug => name.
+	 * @return   array Array of page slug => name.
 	 */
 	if ( ! function_exists( 'wma_pages_array' ) ) {
 		function wma_pages_array( $return = 'post_name' ) {
 			//Helper variables
-				$pages  = get_pages();
+				$args   = apply_filters( WMAMP_HOOK_PREFIX . 'wma_pages_array_args', array(
+						'sort_order'  => 'ASC',
+						'sort_column' => 'post_title',
+					), $return );
+				$pages  = get_pages( $args );
 				$output = array();
 
 			//Preparing output array
-				$output[''] = apply_filters( WMAMP_HOOK_PREFIX . 'pages_array_select_text', __( '- Select a page -', 'wm_domain' ), $return );
+				$output[''] = apply_filters( WMAMP_HOOK_PREFIX . 'wma_pages_array_select_text', __( '- Select a page -', 'wm_domain' ), $return );
 
 				if ( is_array( $pages ) && ! empty( $pages ) ) {
 					foreach ( $pages as $page ) {
@@ -394,9 +411,6 @@
 					}
 				}
 
-				//Sort alphabetically
-					asort( $output );
-
 			//Output
 				return apply_filters( WMAMP_HOOK_PREFIX . 'wma_pages_array' . '_output', $output, $return );
 		}
@@ -407,9 +421,10 @@
 	/**
 	 * Get array of widget areas
 	 *
-	 * @since   1.0
+	 * @since    1.0
+	 * @version  1.0.5
 	 *
-	 * @return  array Array of widget area id => name.
+	 * @return   array Array of widget area id => name.
 	 */
 	if ( ! function_exists( 'wma_widget_areas_array' ) ) {
 		function wma_widget_areas_array() {
@@ -419,7 +434,7 @@
 				$output = array();
 
 			//Preparing output array
-				$output[''] = apply_filters( WMAMP_HOOK_PREFIX . 'widget_areas_array_select_text', __( '- Select area -', 'wm_domain' ) );
+				$output[''] = apply_filters( WMAMP_HOOK_PREFIX . 'wma_widget_areas_array_select_text', __( '- Select area -', 'wm_domain' ) );
 
 				if ( is_array( $wp_registered_sidebars ) && ! empty( $wp_registered_sidebars ) ) {
 					foreach ( $wp_registered_sidebars as $area ) {

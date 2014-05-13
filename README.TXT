@@ -6,7 +6,7 @@ Author URI: http://www.webmandesign.eu/
 Plugin URI: http://www.webmandesign.eu/webman-amplifier/
 Requires at least: 3.6
 Tested up to: 3.9
-Stable tag: 1.0
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,13 @@ Please note that the plugin integrates an Isotope JavaScript filter. This script
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.5 =
+Added plugin deactivation hook
+Better hooking into `wma_meta_option()` function
+Sorting outputs of `wma_pages_array()` and `wma_taxonomy_array()` functions
+Filter names fixed in `wma_posts_array()`, `wma_pages_array()` and `wma_widget_areas_array()` functions
+Files changed: `webman-amplifier.php, includes/functions.php`
 
 = 1.0 =
 This is initial plugin release.
