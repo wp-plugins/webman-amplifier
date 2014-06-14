@@ -14,7 +14,9 @@ Amplifies functionality of WP themes. Provides custom post types, shortcodes, me
 
 == Description ==
 
+<blockquote>
 **[WebMan Amplifier](http://www.webmandesign.eu/ "WebMan Design") is WordPress plugin that provides mega pack of features! This is a premium plugin that you can get absolutely for free! The plugin was build to help with and simplify the WordPress theme development process, thus is suited for theme developers mostly.**
+</blockquote>
 
 This plugin was created primarily for [WebMan Themes](http://www.webmandesign.eu/ "WebMan Themes"), but it works with any other theme as well. The plugin adds several useful custom post types to your WordPress installation. It contains an advanced metabox generator that you can use to create a custom form fields for any of your custom post types or for WordPress native Posts and Pages. Besides, the WebMan Amplifier features a bunch of useful shortcodes and is completely compatible with popular premium (3rd party) Visual Composer plugin. Using both these plugins you get complete visual control over the content of your website. And finally, the plugin allows you to use a custom icons (icon font from Fontello.com) that are high DPI screen (Retina) ready! WebMan Amplifier is also RTL languages ready and very customizable and extendable via actions and filters!
 
@@ -80,8 +82,21 @@ Please note that the plugin integrates an Isotope JavaScript filter. This script
 
 == Changelog ==
 
+= 1.0.9 =
+* Added Master Slider shortcode support for Visual Composer
+* Added a shortcode to display a custom post meta field value `[wm_meta field="wmamp-meta-field" custom"1/0" /]`
+* Added option to define the supported version of plugin for themes
+* Column shortcode styling improvements
+* Divider shortcode styling option added for Visual Composer
+* Taxonomies list sorted by name in shortcodes descriptions in Visual Composer
+* Visual Composer inner column support improved
+* Visual Composer Image shortcode styling options added
+* Localization texts changed
+
+Files changed: `webman-amplifier.php, webman-amplifier-setup.php, assets/js/shortcode-accordion.js, assets/js/dev/shortcode-accordion.dev.js, includes/functions.php, includes/shortcodes/class-shortcodes.php, includes/shortcodes/definitions/definitions.php, includes/shortcodes/renderers/accordion.php, includes/shortcodes/renderers/column.php, includes/shortcodes/renderers/image.php, includes/shortcodes/renderers/meta.php, includes/shortcodes/renderers/row.php, languages/wm_domain.php`
+
 = 1.0.8 =
-* Added support for Visual Composer v4.2
+* Added support for Visual Composer v4.2+
 * Updated sample setup file
 
 Files changed: `webman-amplifier-setup.php, includes/functions.php, includes/metabox/class-metabox.php, includes/shortcodes/class-shortcodes.php, includes/shortcodes/definitions/definitions.php, includes/shortcodes/vc_addons/shortcodes-admin.php`
@@ -111,8 +126,11 @@ Files changed: `webman-amplifier.php, includes/functions.php`
 
 == Upgrade Notice ==
 
+= 1.0.9 =
+Added MasterSlider support, shortcodes improvements. Added a shortcode to display a custom post meta field value.
+
 = 1.0.8 =
-Added support for Visual Composer v4.2.
+Added support for Visual Composer v4.2+.
 
 = 1.0.7 =
 Metabox class improved.
