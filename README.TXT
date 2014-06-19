@@ -134,6 +134,9 @@ Files changed: `webman-amplifier.php, includes/functions.php`
 
 == Upgrade Notice ==
 
+= 1.0.9.2 =
+Fixes Shortcode Generator issue in Firefox browser.
+
 = 1.0.9.1 =
 Fixes the issue with admin notice error.
 
