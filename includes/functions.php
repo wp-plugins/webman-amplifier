@@ -58,35 +58,35 @@
 
 
 	/**
-	 * Theme subfeature support checker
+	 * Is plugin's subfeature supported by the theme?
 	 *
-	 * @since   1.0
+	 * @since   1.0.9.15
 	 *
-	 * @param   string $feature
+	 * @param   string $subfeature
 	 *
-	 * @return  array Empty array if the theme doesn't support the feature or array of supported subfeatures.
+	 * @return  bool
 	 */
-	if ( ! function_exists( 'wma_current_theme_supports_subfeatures' ) ) {
-		function wma_current_theme_supports_subfeatures( $feature = '' ) {
-			if ( ! trim( $feature ) ) {
-				return false;
-			}
+	if ( ! function_exists( 'wma_supports_subfeature' ) ) {
+		function wma_supports_subfeature( $subfeature = '' ) {
+			//Helper variables
+				$supported            = (array) get_theme_support( 'webman-amplifier' );
+				$supported_shortcodes = (array) get_theme_support( 'webman-shortcodes' );
 
-			//Default output setup
-				$output = array();
+				$supported = array_filter( array_merge( (array) $supported[0], (array) $supported_shortcodes[0] ) );
 
 			//Processing
-				if ( current_theme_supports( $feature ) ) {
-					$theme_supports = get_theme_support( $feature );
-					if ( isset( $theme_supports[0] ) ) {
-						$output = (array) $theme_supports[0];
-					}
+				if (
+						trim( $subfeature )
+						&& is_array( $supported )
+						&& ! empty( $supported )
+					) {
+					return in_array( $subfeature, $supported );
 				}
 
 			//Output
-				return apply_filters( WMAMP_HOOK_PREFIX . 'wma_current_theme_supports_subfeatures' . '_output', $output, $feature );
+				return false;
 		}
-	} // /wma_current_theme_supports_subfeatures
+	} // /wma_supports_subfeature
 
 
 
