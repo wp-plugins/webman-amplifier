@@ -4,21 +4,24 @@
  *
  * This file is being included into "../class-shortcodes.php" file's shortcode_render() method.
  *
- * @since  1.0
+ * @since    1.0
+ * @version  1.1
  *
- * @uses   $codes_globals['divider_types']
+ * @uses   $codes_globals['divider_appearance']
  *
  * @param  string class
  * @param  string space_after
  * @param  string space_before
  * @param  string style
- * @param  string type
+ * @param  string type Legacy attribute
+ * @param  string appearance Introduced not to conflict with Beaver Builder
  */
 
 
 
 //Shortcode attributes
 	$defaults = apply_filters( WM_SHORTCODES_HOOK_PREFIX . '_defaults', array(
+			'appearance'   => '',
 			'class'        => '',
 			'space_after'  => '-',
 			'space_before' => '-',
@@ -44,8 +47,12 @@
 			$atts['style'] = ' style="' . esc_attr( $atts['style'] ) . '"';
 		}
 	//type
+		//Fix for Beaver Builder
+			if ( $atts['appearance'] ) {
+				$atts['type'] = $atts['appearance'];
+			}
 		$atts['type'] = trim( $atts['type'] );
-		if ( in_array( $atts['type'], array_keys( $codes_globals['divider_types'] ) ) ) {
+		if ( in_array( $atts['type'], array_keys( $codes_globals['divider_appearance'] ) ) ) {
 			$atts['class'] .= ' type-' . $atts['type'];
 		}
 	//class

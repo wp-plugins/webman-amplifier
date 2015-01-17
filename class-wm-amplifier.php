@@ -3,10 +3,10 @@
  * WebMan Amplifier
  *
  * @package    WebMan Amplifier
- * @author     WebMan
- * @license    GPL-2.0+
- * @link       http://www.webmandesign.eu
- * @copyright  2014 WebMan - Oliver Juhas
+ * @copyright  2015 WebMan - Oliver Juhas
+ * @license    GPL-2.0+, http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * @link  http://www.webmandesign.eu
  */
 
 
@@ -21,10 +21,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * Contains the main functions for WebMan Amplifier.
  *
- * @since    1.0
- * @version	 1.0.9.15
  * @package	 WebMan Amplifier
  * @author   WebMan
+ *
+ * @since    1.0
+ * @version	 1.1
  */
 if ( ! class_exists( 'WM_Amplifier' ) ) {
 
@@ -33,11 +34,6 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 		/**
 		 * VARIABLES DEFINITION
 		 */
-
-			/**
-			 * @var  string
-			 */
-			public $version;
 
 			/**
 			 * @var  array
@@ -76,7 +72,6 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 					if ( null === $instance ) {
 						$instance = new WM_Amplifier;
 
-						$instance->setup_globals();
 						$instance->setup_actions();
 						$instance->setup_features();
 					}
@@ -154,48 +149,27 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 		 */
 
 			/**
-			 * Set some smart defaults to class variables.
-			 * Allow some of them to be filtered to allow for early overriding.
-			 *
-			 * @since   1.0
-			 * @access  private
-			 */
-			private function setup_globals() {
-				//Versions
-					$this->version = WMAMP_VERSION;
-
-				//Paths, URLs
-					$this->includes_dir = apply_filters( WMAMP_HOOK_PREFIX . 'includes_dir', WMAMP_INCLUDES_DIR );
-					$this->assets_url   = apply_filters( WMAMP_HOOK_PREFIX . 'assets_url', WMAMP_ASSETS_URL );
-					$this->lang_dir     = apply_filters( WMAMP_HOOK_PREFIX . 'lang_dir', trailingslashit( WMAMP_PLUGIN_DIR . 'languages' ) );
-
-				//Misc
-					$this->domain = 'wm_domain';
-					// $this->errors = new WP_Error(); //Feedback
-			} // /setup_globals
-
-
-
-			/**
 			 * Setup the default hooks and actions
 			 *
 			 * @since    1.0
-			 * @version  1.0.9.15
-			 * @access   private
+			 * @version  1.1
+			 *
+			 * @access  public
 			 */
-			private function setup_actions() {
+			public function setup_actions() {
 				//Array of core actions
 					$actions = array(
-						'register_metaboxes'  => 'plugins_loaded',    //Register metaboxes
-						'register_widgets'    => 'init|1',            //Register widgets
-						'save_permalinks'     => 'init',              //Save custom permalinks
-						'register_post_types' => 'init',              //Register post types
-						'custom_taxonomies'   => 'init|98',           //Register additional custom taxonomies
-						'load_textdomain'     => 'init',              //Load textdomain
-						'register_shortcodes' => 'init',              //Register shortcodes
-						'register_icons'      => 'init',              //Register icon font
-						'admin_notices'       => 'admin_notices',     //Display admin notices
-						'deactivate'          => 'switch_theme|10|2', //Deactivate plugin when theme changed
+						'load_textdomain'               => 'init|-10',          //Load textdomain (priority < 0!)
+						'register_metaboxes'            => 'plugins_loaded',    //Register metaboxes
+						'register_widgets'              => 'init|1',            //Register widgets
+						'save_permalinks'               => 'init',              //Save custom permalinks
+						'register_post_types'           => 'init',              //Register post types
+						'custom_taxonomies'             => 'init|98',           //Register additional custom taxonomies
+						'register_shortcodes'           => 'init',              //Register shortcodes
+						'register_visual_editor_addons' => 'init',              //Register Visual Editor addons
+						'register_icons'                => 'init',              //Register icon font
+						'admin_notices'                 => 'admin_notices',     //Display admin notices
+						'deactivate'                    => 'switch_theme|10|2', //Deactivate plugin when theme changed
 					);
 
 				//Add actions
@@ -214,6 +188,7 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 
 				//Add filters
 					add_filter( 'request', array( $this, 'post_types_in_feed' ) );
+					add_filter( 'plugin_action_links_' . plugin_basename( WMAMP_PLUGIN_FILE ), array( $this, 'setup_action_links' ) );
 
 				//Loaded action
 					do_action( WMAMP_HOOK_PREFIX . 'loaded' );
@@ -224,10 +199,12 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 			/**
 			 * Setup WordPress features
 			 *
-			 * @since   1.0
-			 * @access  private
+			 * @since    1.0
+			 * @version  1.1
+			 *
+			 * @access  public
 			 */
-			private function setup_features() {
+			public function setup_features() {
 				//Cropped squared image used in admin post tables
 					$admin_thumb_size = apply_filters( WMAMP_HOOK_PREFIX . 'admin_thumb_size', array( 100, 100 ) );
 					add_image_size( 'admin-thumbnail', $admin_thumb_size[0], $admin_thumb_size[1], true );
@@ -235,6 +212,33 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 				//Load assets (JS and CSS)
 					add_action( 'admin_enqueue_scripts', array( $this, 'assets' ), 998 );
 			} // /setup_features
+
+
+
+			/**
+			 * Setup WordPress plugin action links
+			 *
+			 * @since    1.1
+			 * @version  1.1
+			 *
+			 * @access  public
+			 */
+			public function setup_action_links( $links ) {
+				//Preparing output
+					//Icon font setup link
+						if (
+								apply_filters( WMAMP_HOOK_PREFIX . 'enable_iconfont', true )
+								&& ! wma_supports_subfeature( 'disable-fonticons' )
+							) {
+							$links[] = '<a href="' . get_admin_url( null, 'themes.php?page=icon-font' ) . '">' . _x( 'Icon Font', 'Plugin action link.', 'wm_domain' ) . '</a>';
+						}
+
+					//Themes link
+						$links[] = '<a href="http://www.webmandesign.eu/" target="_blank" style="color: #83A552;">WebMan Themes</a>';
+
+				//Output
+					return $links;
+			} // /setup_action_links
 
 
 
@@ -248,8 +252,9 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 			 * Register (and include) styles and scripts
 			 *
 			 * @since    1.0
-			 * @version  1.0.9.11
-			 * @access   public
+			 * @version  1.1
+			 *
+			 * @access  public
 			 */
 			public function assets() {
 				//Helper variables
@@ -257,19 +262,13 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 
 				//Register
 					//Styles
-						wp_register_style( 'wmamp-admin-styles',    $this->assets_url . 'css/admin-addons.css',    false, $this->version, 'screen' );
-						wp_register_style( 'wmamp-admin-styles-38', $this->assets_url . 'css/admin-addons-38.css', false, $this->version, 'screen' );
+						wp_register_style( 'wmamp-admin-styles', WMAMP_ASSETS_URL . 'css/admin-addons.css', false, WMAMP_VERSION, 'screen' );
 
 				//Enqueue (only on specific admin pages)
-				if ( in_array( $current_screen->base, array( 'edit', 'post' ) ) ) {
-					//Styles
-						wp_enqueue_style( 'wmamp-admin-styles' );
-				}
-
-				//WordPress 3.8+ styles
-				if ( version_compare( (float) $wp_version, '3.8', '>=' ) ) {
-					wp_enqueue_style( 'wmamp-admin-styles-38' );
-				}
+					if ( in_array( $current_screen->base, array( 'edit', 'post' ) ) ) {
+						//Styles
+							wp_enqueue_style( 'wmamp-admin-styles' );
+					}
 			} // /assets
 
 
@@ -456,14 +455,16 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 			/**
 			 * Register metaboxes
 			 *
-			 * @since   1.0.9.15
+			 * @since    1.0
+			 * @version  1.1
+			 *
 			 * @access  public
 			 *
-			 * @uses    WM_Metabox
+			 * @uses  WM_Metabox
 			 */
 			public function register_metaboxes() {
 				if ( is_admin() ) {
-					require( $this->includes_dir . 'metabox/class-metabox.php' );
+					require( WMAMP_INCLUDES_DIR . 'metabox/class-metabox.php' );
 				}
 			} // /register_metaboxes
 
@@ -473,20 +474,42 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 			 * Register shortcodes
 			 *
 			 * @since    1.0
-			 * @version  1.0.9.15
-			 * @access   public
+			 * @version  1.1
 			 *
-			 * @uses     WM_Shortcodes
+			 * @access  public
+			 *
+			 * @uses  WM_Shortcodes
 			 */
 			public function register_shortcodes() {
 				if (
 						apply_filters( WMAMP_HOOK_PREFIX . 'enable_shortcodes', true )
 						&& ! wma_supports_subfeature( 'disable-shortcodes' )
 					) {
-					require( $this->includes_dir . 'shortcodes/class-shortcodes.php' );
-					return WM_Shortcodes::instance();
+					require( WMAMP_INCLUDES_DIR . 'shortcodes/class-shortcodes.php' );
+					return wma_shortcodes();
 				}
 			} // /register_shortcodes
+
+
+
+			/**
+			 * Register Visual Editor addons
+			 *
+			 * @since    1.1
+			 * @version  1.1
+			 *
+			 * @access  public
+			 *
+			 * @uses  Visual Editor addons
+			 */
+			public function register_visual_editor_addons() {
+				if (
+						apply_filters( WMAMP_HOOK_PREFIX . 'enable_visual_editor_addons', true )
+						&& ! wma_supports_subfeature( 'disable-visual-editor-addons' )
+					) {
+					require( WMAMP_INCLUDES_DIR . 'visual-editor/visual-editor.php' );
+				}
+			} // /register_visual_editor_addons
 
 
 
@@ -494,17 +517,18 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 			 * Register icon font file
 			 *
 			 * @since    1.0
-			 * @version  1.0.9.15
-			 * @access   public
+			 * @version  1.1
 			 *
-			 * @uses     WM_Icons
+			 * @access  public
+			 *
+			 * @uses  WM_Icons
 			 */
 			public function register_icons() {
 				if (
 						apply_filters( WMAMP_HOOK_PREFIX . 'enable_iconfont', true )
 						&& ! wma_supports_subfeature( 'disable-fonticons' )
 					) {
-					require( $this->includes_dir . 'class-icon-font.php' );
+					require( WMAMP_INCLUDES_DIR . 'class-icon-font.php' );
 					return WM_Icons::instance();
 				}
 			} // /register_icons
@@ -514,7 +538,9 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 			/**
 			 * Register widgets
 			 *
-			 * @since   1.0.9.9
+			 * @since    1.0
+			 * @version  1.1
+			 *
 			 * @access  public
 			 */
 			public function register_widgets() {
@@ -566,7 +592,8 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 			 * );
 			 *
 			 * @since    1.0
-			 * @version  1.0.9.15
+			 * @version  1.1
+			 *
 			 * @access   public
 			 */
 			public function admin_notices() {
@@ -639,26 +666,28 @@ if ( ! class_exists( 'WM_Amplifier' ) ) {
 			 * will be removed on plugin updates. If you're creating custom
 			 * translation files, please use the global language folder.
 			 *
-			 * @since   1.0
+			 * @since    1.0
+			 * @version  1.1
+			 *
 			 * @access  public
 			 *
 			 * @return  boolean
 			 */
 			public function load_textdomain() {
 				//Traditional WordPress plugin locale filter
-					$locale = apply_filters( 'plugin_locale', get_locale(), $this->domain );
-					$mofile = sprintf( '%1$s-%2$s.mo', $this->domain, $locale );
+					$locale = apply_filters( 'plugin_locale', get_locale(), 'wm_domain' );
+					$mofile = $locale . '.mo';
 
 				//Setup paths to current locale file
-					$mofile_local  = $this->lang_dir . $mofile;
-					$mofile_global = WP_LANG_DIR . '/webman-amplifier/' . $mofile;
+					$mofile_local  = apply_filters( WMAMP_HOOK_PREFIX . 'lang_dir', trailingslashit( WMAMP_PLUGIN_DIR . 'languages' ) ) . $mofile;
+					$mofile_global = WP_LANG_DIR . '/plugins/webman-amplifier/' . $mofile;
 
 					if ( file_exists( $mofile_global ) ) {
-						//Look in global /wp-content/languages/wm-amplifier folder
-							return load_textdomain( $this->domain, $mofile_global );
+						//Look in global /wp-content/languages/webman-amplifier folder
+							return load_textdomain( 'wm_domain', $mofile_global );
 					} elseif ( file_exists( $mofile_local ) ) {
-						//Look in local /wp-content/plugins/wm-amplifier/languages/ folder
-							return load_textdomain( $this->domain, $mofile_local );
+						//Look in local /wp-content/plugins/webman-amplifier/languages/ folder
+							return load_textdomain( 'wm_domain', $mofile_local );
 					}
 
 				//Nothing found

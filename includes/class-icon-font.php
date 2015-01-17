@@ -16,11 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * WebMan Font Icons Class
  *
- * @since       1.0
  * @package     WebMan Amplifier
  * @subpackage  Font Icons
- * @author      WebMan
- * @version     1.0.9.3
+ *
+ * @since    1.0
+ * @version  1.1
  */
 if ( ! class_exists( 'WM_Icons' ) ) {
 
@@ -29,11 +29,6 @@ if ( ! class_exists( 'WM_Icons' ) ) {
 		/**
 		 * VARIABLES DEFINITION
 		 */
-
-			/**
-			 * @var  string
-			 */
-			private $version = '1.0';
 
 			/**
 			 * @var  array Array of paths and URLs
@@ -107,7 +102,9 @@ if ( ! class_exists( 'WM_Icons' ) ) {
 			/**
 			 * Global variables setup
 			 *
-			 * @since   1.0
+			 * @since    1.0
+			 * @version  1.1
+			 *
 			 * @access  private
 			 */
 			private function setup_globals() {
@@ -115,15 +112,14 @@ if ( ! class_exists( 'WM_Icons' ) ) {
 					$this->font_name = 'fontello';
 
 				//Paths and URLs
-					$this->paths               = wp_upload_dir();
-					$this->paths['fonts']      = 'wmamp_fonts';
-					$this->paths['temp']       = trailingslashit( $this->paths['fonts'] ) . 'temp';
-					$this->paths['fontdir']    = trailingslashit( $this->paths['basedir'] ) . $this->paths['fonts'] . '/' . $this->font_name;
-					$this->paths['tempdir']    = trailingslashit( $this->paths['basedir'] ) . $this->paths['temp'];
-					$this->paths['fonturl']    = trailingslashit( $this->paths['baseurl'] ) . $this->paths['fonts'] . '/' . $this->font_name;
-					$this->paths['tempurl']    = trailingslashit( $this->paths['baseurl'] ) . trailingslashit( $this->paths['temp'] );
-					$this->paths['assets_url'] = apply_filters( WM_ICONS_HOOK_PREFIX . 'assets_url', WMAMP_ASSETS_URL );;
-					$this->paths               = apply_filters( WM_ICONS_HOOK_PREFIX . 'paths', $this->paths );
+					$this->paths            = wp_upload_dir();
+					$this->paths['fonts']   = 'wmamp_fonts';
+					$this->paths['temp']    = trailingslashit( $this->paths['fonts'] ) . 'temp';
+					$this->paths['fontdir'] = trailingslashit( $this->paths['basedir'] ) . $this->paths['fonts'] . '/' . $this->font_name;
+					$this->paths['tempdir'] = trailingslashit( $this->paths['basedir'] ) . $this->paths['temp'];
+					$this->paths['fonturl'] = trailingslashit( $this->paths['baseurl'] ) . $this->paths['fonts'] . '/' . $this->font_name;
+					$this->paths['tempurl'] = trailingslashit( $this->paths['baseurl'] ) . trailingslashit( $this->paths['temp'] );
+					$this->paths            = apply_filters( WM_ICONS_HOOK_PREFIX . 'paths', $this->paths );
 
 				//Capability to upload font file
 					$this->capability = apply_filters( WM_ICONS_HOOK_PREFIX . 'capability', 'switch_themes' );
@@ -181,7 +177,9 @@ if ( ! class_exists( 'WM_Icons' ) ) {
 			/**
 			 * Scripts and styles
 			 *
-			 * @since   1.0
+			 * @since    1.0
+			 * @version  1.1
+			 *
 			 * @access  public
 			 */
 			public function assets() {
@@ -192,14 +190,14 @@ if ( ! class_exists( 'WM_Icons' ) ) {
 
 				//Register
 					//Styles
-						wp_register_style( 'wm-metabox-styles',     $this->paths['assets_url'] . 'css/metabox.css',     false, $this->version, 'screen' );
-						wp_register_style( 'wm-metabox-styles-rtl', $this->paths['assets_url'] . 'css/rtl-metabox.css', false, $this->version, 'screen' );
+						wp_register_style( 'wm-metabox-styles',     WMAMP_ASSETS_URL . 'css/metabox.css',     false, WMAMP_VERSION, 'screen' );
+						wp_register_style( 'wm-metabox-styles-rtl', WMAMP_ASSETS_URL . 'css/rtl-metabox.css', false, WMAMP_VERSION, 'screen' );
 						if ( $icon_font_url ) {
-							wp_register_style( 'wm-fonticons', $icon_font_url, false, $this->version, 'screen' );
+							wp_register_style( 'wm-fonticons', $icon_font_url, false, WMAMP_VERSION, 'screen' );
 						}
 
 					//Scripts
-						wp_register_script( 'wm-metabox-scripts', $this->paths['assets_url'] . 'js/metabox.js', array( 'jquery', 'jquery-ui-tabs', 'jquery-ui-slider' ), $this->version, true );
+						wp_register_script( 'wm-metabox-scripts', WMAMP_ASSETS_URL . 'js/metabox.js', array( 'jquery', 'jquery-ui-tabs', 'jquery-ui-slider' ), WMAMP_VERSION, true );
 
 				//Enqueue (only on admin page)
 				if ( 'appearance_page_icon-font' == $current_screen->id ) {
@@ -223,8 +221,9 @@ if ( ! class_exists( 'WM_Icons' ) ) {
 			 * Add admin menu element
 			 *
 			 * @since    1.0
-			 * @version  1.0.9.3
-			 * @access   public
+			 * @version  1.1
+			 *
+			 * @access  public
 			 */
 			public function admin_menu() {
 				//Saving fields from theme options form
@@ -242,8 +241,8 @@ if ( ! class_exists( 'WM_Icons' ) ) {
 
 				//Adding admin menu item under "Appearance" menu
 					add_theme_page(
-							__( 'Icon Font', 'wm_domain' ), //page_title
-							__( 'Icon Font', 'wm_domain' ), //menu_title
+							_x( 'Icon Font', 'Admin page title.', 'wm_domain' ), //page_title
+							_x( 'Icon Font', 'Admin menu title.', 'wm_domain' ), //menu_title
 							$this->capability,              //capability
 							'icon-font',                    //menu_slug
 							array( $this, 'admin_form' )    //form render function callback
@@ -265,7 +264,7 @@ if ( ! class_exists( 'WM_Icons' ) ) {
 					if ( isset( $fonticons['icons_select'] ) ) {
 						$fonticons = wma_ksort( $fonticons['icons_select'] );
 
-						$output  = '<tr class="option-heading toggle"><th colspan="2">' . __( 'Click to display recent available icon classes', 'wm_domain' ) . '</th></tr></tbody><tbody><tr class="option padding-20"><td colspan="2"><div class="box yellow">';
+						$output  = '<tr class="option-heading toggle"><th colspan="2">' . __( 'Click to display the recent available icons', 'wm_domain' ) . '</th></tr></tbody><tbody><tr class="option padding-20"><td colspan="2"><div class="box yellow">';
 						$output .= '<ol class="no-inline-ol">';
 						foreach ( $fonticons as $icon => $name ) {
 							$output .= '<li><i class="' . $icon . '" style="display: inline-block; width: 24px; height: 24px; margin: 0 5px; text-align: center; line-height: 24px; font-size: 16px; background: rgba(0,0,0, .1); color: #000; border-radius: 100px;"></i><input type="text" value="' . $icon . '" readonly="readonly" style="display: inline-block; max-width: 50%;" onfocus="this.select();" /></li>';
@@ -362,7 +361,7 @@ if ( ! class_exists( 'WM_Icons' ) ) {
 								//Font CSS file link
 									if ( $options['wmamp-icon-font'] ) {
 										$output .= '<tr class="option padding-20"><td colspan="2">';
-											$output .= '<div class="box blue">' . sprintf( __( 'To use the icon font please use this CSS file: %s', 'wm_domain' ), '<br /><code><a href="' . $options['wmamp-icon-font'] . '" target="_blank">' . $options['wmamp-icon-font'] . '</a></code>' ) . '</div>';
+											$output .= '<div class="box blue">' . sprintf( __( 'To display the icon font, please, use this CSS file: %s', 'wm_domain' ), '<br /><code><a href="' . $options['wmamp-icon-font'] . '" target="_blank">' . $options['wmamp-icon-font'] . '</a></code>' ) . '</div>';
 										$output .= '</td></tr>';
 									}
 

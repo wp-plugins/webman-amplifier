@@ -3,6 +3,9 @@
  * WebMan Amplifier global helper functions
  *
  * @package  WebMan Amplifier
+ *
+ * @since    1.0
+ * @version  1.1
  */
 
 
@@ -1217,7 +1220,9 @@
 	/**
 	 * Minify HTML output (to prevent wpautop)
 	 *
-	 * @since  1.0
+	 * @since    1.1
+	 * @version  1.1
+	 *
 	 * @link   http://stackoverflow.com/questions/6225351/how-to-minify-php-page-html-output
 	 *
 	 * @param  string $content
@@ -1227,7 +1232,7 @@
 			//Requirements check
 				if (
 						( isset( $_GET['wma_minify_html'] ) && ! $_GET['wma_minify_html'] )
-						|| ! apply_filters( 'wmhook_wma_minify_html_enabled', true )
+						|| ! apply_filters( WMAMP_HOOK_PREFIX . 'wma_minify_html_enabled', true )
 					) {
 					return $content;
 				}
@@ -1241,7 +1246,7 @@
 				$content = preg_replace( array_keys( $replacements ), $replacements, $content );
 
 			//Output
-				return apply_filters( 'wmhook_wma_minify_html_output', $content );
+				return apply_filters( WMAMP_HOOK_PREFIX . 'wma_minify_html_output', $content );
 		}
 	} // /wma_minify_html
 
@@ -1250,7 +1255,8 @@
 	/**
 	 * Get registered image sizes with dimensions
 	 *
-	 * @since   1.0
+	 * @since    1.0
+	 * @version  1.1
 	 *
 	 * @return  array Image sizes.
 	 */
@@ -1260,7 +1266,7 @@
 				global $_wp_additional_image_sizes;
 
 				$output   = array( 'full' => __( 'Original image size (full)', 'wm_domain' ) );
-				$cropping = array( __( 'scaled', 'wm_domain' ), __( 'cropped', 'wm_domain' ) );
+				$cropping = array( _x( 'scaled', 'WordPress image size actions.', 'wm_domain' ), _x( 'cropped', 'WordPress image size actions.', 'wm_domain' ) );
 
 			//Preparing output
 				foreach( get_intermediate_image_sizes() as $size ) {
@@ -1295,26 +1301,79 @@
 				}
 
 			//Output
-				return apply_filters( 'wmhook_wma_get_image_sizes_output', $output );
+				return apply_filters( WMAMP_HOOK_PREFIX . 'wma_get_image_sizes_output', $output );
 		}
 	} // /wma_get_image_sizes
 
 
 
 	/**
-	 * Check if Visual Composer plugin is active
+	 * Check if page builder plugin is active
 	 *
-	 * Supports both 4.2+ plugin versions and older too.
-	 *
-	 * @since   1.0.8
+	 * @since    1.1
+	 * @version  1.1
 	 *
 	 * @return  boolean
 	 */
-	if ( ! function_exists( 'wma_is_active_vc' ) ) {
-		function wma_is_active_vc() {
+	if ( ! function_exists( 'wma_is_active_page_builder' ) ) {
+		function wma_is_active_page_builder() {
 			//Output
-				return apply_filters( 'wmhook_wma_is_active_vc_output', ( class_exists( 'Vc_Manager' ) || class_exists( 'WPBakeryVisualComposer' ) ) );
+				return apply_filters( WMAMP_HOOK_PREFIX . 'wma_is_active_page_builder_output', ( wma_is_active_vc() || ( class_exists( 'FLBuilderModel' ) && FLBuilderModel::is_builder_enabled() ) ) );
 		}
-	} // /wma_is_active_vc
+	} // /wma_is_active_page_builder
+
+
+
+		/**
+		 * Check if Beaver Builder plugin is active
+		 *
+		 * Using loop functions, so needs to be hooked in `wp` rather then `init`.
+		 *
+		 * @since    1.1
+		 * @version  1.1
+		 *
+		 * @return  boolean
+		 */
+		if ( ! function_exists( 'wma_is_active_bb' ) ) {
+			function wma_is_active_bb() {
+				//Helper variables
+					$supported_post_types = get_option( '_fl_builder_post_types' );
+
+				//Output
+					if (
+							class_exists( 'FLBuilder' )
+							&& ! is_admin()
+							&& ! empty( $supported_post_types )
+							&& is_singular( (array) $supported_post_types )
+							&& (
+									get_post_meta( get_the_ID(), '_fl_builder_enabled', true )
+									|| isset( $_GET['fl_builder'] )
+								)
+						) {
+						return true;
+					}
+
+					return false;
+			}
+		} // /wma_is_active_bb
+
+
+
+		/**
+		 * Check if Visual Composer plugin is active
+		 *
+		 * Supports both 4.2+ plugin versions and older too.
+		 *
+		 * @since    1.1
+		 * @version  1.1
+		 *
+		 * @return  boolean
+		 */
+		if ( ! function_exists( 'wma_is_active_vc' ) ) {
+			function wma_is_active_vc() {
+				//Output
+					return apply_filters( WMAMP_HOOK_PREFIX . 'wma_is_active_vc_output', ( class_exists( 'Vc_Manager' ) || class_exists( 'WPBakeryVisualComposer' ) ) );
+			}
+		} // /wma_is_active_vc
 
 ?>

@@ -5,23 +5,23 @@
  * A set of additional features for WebMan themes (http://www.webmandesign.eu).
  *
  * @package    WebMan Amplifier
- * @author     WebMan
- * @license    GPL-2.0+
- * @link       http://www.webmandesign.eu
- * @copyright  2014 WebMan - Oliver Juhas
+ * @copyright  2015 WebMan - Oliver Juhas
+ * @license    GPL-2.0+, http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * @link  http://www.webmandesign.eu
  *
  * Plugin Name:        WebMan Amplifier
  * Plugin URI:         http://www.webmandesign.eu/
  * Description:        Pack of additional WordPress features. Contains shortcodes, additional custom post types, meta box generator, Visual Composer plugin (3rd party) integration, icon font management.
- * Version:            1.0.9.15
+ * Version:            1.1
  * Author:             WebMan - Oliver Juhas
  * Author URI:         http://www.webmandesign.eu/
  * Text Domain:        wm_domain
  * License:            GPL-2.0+
  * License URI:        http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path:        /languages
- * Requires at least:  3.8
- * Tested up to:       4.0.1
+ * Requires at least:  4.0
+ * Tested up to:       4.1
  */
 
 
@@ -37,42 +37,34 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 	//Define global constants
 		//Plugin version
-			define( 'WMAMP_VERSION',      '1.0.9.15' );
-		//Special filter/action hooks prefix
-			define( 'WMAMP_HOOK_PREFIX',  'wmhook_wmamp_' );
+			if ( ! defined( 'WMAMP_VERSION' ) ) define( 'WMAMP_VERSION', '1.1' );
 		//Paths
-			define( 'WMAMP_PLUGIN_FILE',  __FILE__                                         );
-			define( 'WMAMP_PLUGIN_DIR',   plugin_dir_path( __FILE__ )                      );
-			define( 'WMAMP_PLUGIN_URL',   plugin_dir_url( __FILE__ )                       );
-			define( 'WMAMP_INCLUDES_DIR', trailingslashit( WMAMP_PLUGIN_DIR . 'includes' ) );
-			define( 'WMAMP_ASSETS_DIR',   trailingslashit( WMAMP_PLUGIN_DIR . 'assets' )   );
-			define( 'WMAMP_ASSETS_URL',   trailingslashit( WMAMP_PLUGIN_URL . 'assets' )   );
-		//Variable defaults
-			define( 'WMAMP_COLOR_BRIGHTNESS_TRESHOLD', 127 );
+			if ( ! defined( 'WMAMP_PLUGIN_FILE' ) )  define( 'WMAMP_PLUGIN_FILE',  __FILE__                                          );
+			if ( ! defined( 'WMAMP_PLUGIN_DIR' ) )   define( 'WMAMP_PLUGIN_DIR',   plugin_dir_path( __FILE__ )                       );
+			if ( ! defined( 'WMAMP_PLUGIN_URL' ) )   define( 'WMAMP_PLUGIN_URL',   plugin_dir_url( __FILE__ )                        );
+			if ( ! defined( 'WMAMP_INCLUDES_DIR' ) ) define( 'WMAMP_INCLUDES_DIR', trailingslashit( WMAMP_PLUGIN_DIR ) . 'includes/' );
+			if ( ! defined( 'WMAMP_INCLUDES_URL' ) ) define( 'WMAMP_INCLUDES_URL', trailingslashit( WMAMP_PLUGIN_URL ) . 'includes/' );
+			if ( ! defined( 'WMAMP_ASSETS_DIR' ) )   define( 'WMAMP_ASSETS_DIR',   trailingslashit( WMAMP_PLUGIN_DIR ) . 'assets/'   );
+			if ( ! defined( 'WMAMP_ASSETS_URL' ) )   define( 'WMAMP_ASSETS_URL',   trailingslashit( WMAMP_PLUGIN_URL ) . 'assets/'   );
+		//Variables
+			if ( ! defined( 'WMAMP_COLOR_BRIGHTNESS_TRESHOLD' ) ) define( 'WMAMP_COLOR_BRIGHTNESS_TRESHOLD', 127 );
+		//Special filter/action hooks prefix
+			if ( ! defined( 'WMAMP_HOOK_PREFIX' ) ) define( 'WMAMP_HOOK_PREFIX', 'wmhook_wmamp_' );
 
 	//Define Metabox class constants
-		//Special filter/action hooks prefix
-			define( 'WM_METABOX_HOOK_PREFIX', 'wmhook_metabox_' );
-		//Input fields prefixes
-			define( 'WM_METABOX_FIELD_PREFIX', 'wm-' );
-		//Name of the meta variable (serialized array) to be stored in WordPress database
-			define( 'WM_METABOX_SERIALIZED_NAME', '_' . WM_METABOX_FIELD_PREFIX . 'meta' );
-		//HTML tags allowed in meta field labels
-			define( 'WM_METABOX_LABEL_HTML', '<a><br><code><em><img><small><strong>' );
-		//Paths
-			define( 'WM_METABOX_FIELDS_DIR', WMAMP_INCLUDES_DIR . 'metabox/fields/' );
+		if ( ! defined( 'WM_METABOX_FIELD_PREFIX' ) )    define( 'WM_METABOX_FIELD_PREFIX',    'wm-'                                   );
+		if ( ! defined( 'WM_METABOX_SERIALIZED_NAME' ) ) define( 'WM_METABOX_SERIALIZED_NAME', '_' . WM_METABOX_FIELD_PREFIX . 'meta'  );
+		if ( ! defined( 'WM_METABOX_LABEL_HTML' ) )      define( 'WM_METABOX_LABEL_HTML',      '<a><br><code><em><img><small><strong>' );
+		if ( ! defined( 'WM_METABOX_HOOK_PREFIX' ) )     define( 'WM_METABOX_HOOK_PREFIX',     'wmhook_metabox_'                       );
 
 	//Define Shortcodes class constants
-		//Special filter/action hooks prefix
-			define( 'WM_SHORTCODES_HOOK_PREFIX', 'wmhook_shortcode_' );
+		if ( ! defined( 'WM_SHORTCODES_HOOK_PREFIX' ) ) define( 'WM_SHORTCODES_HOOK_PREFIX', 'wmhook_shortcode_' );
 
 	//Define Font Icons class constants
-		//Special filter/action hooks prefix
-			define( 'WM_ICONS_HOOK_PREFIX', 'wmhook_icons_' );
+		if ( ! defined( 'WM_ICONS_HOOK_PREFIX' ) ) define( 'WM_ICONS_HOOK_PREFIX', 'wmhook_icons_' );
 
 	//Define Widgets constants
-		//Special filter/action hooks prefix
-			define( 'WM_WIDGETS_HOOK_PREFIX', 'wmhook_widgets_' );
+		if ( ! defined( 'WM_WIDGETS_HOOK_PREFIX' ) ) define( 'WM_WIDGETS_HOOK_PREFIX', 'wmhook_widgets_' );
 
 
 
