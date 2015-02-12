@@ -22,7 +22,7 @@
 	 * @subpackage  Metabox
 	 *
 	 * @since    1.0
-	 * @version  1.1
+	 * @version  1.1.5
 	 */
 	if ( ! function_exists( 'wma_field_radio' ) ) {
 		function wma_field_radio( $field, $page_template = null ) {
@@ -39,7 +39,7 @@
 						'default'     => '',       //Default value
 						'inline'      => false,    //By default the radio buttons are displayed as list. You can align them in a row here.
 						'repeater'    => false,    //Special values when used in Repeater field
-						'custom'      => '',       //Custom label HTML (use "{{value}}"" to substitute for current item value and "{{name}}"" to display the item name)
+						'custom'      => '',       //Custom label HTML (use "{{value}}" to substitute for current item value and "{{name}}" to display the item name)
 						'hide-radio'  => false,    //If set to true, the ".hide" CSS class will be applied on radio input field (useful with custom label HTML)
 						'conditional' => '',       //Conditional display setup
 					) );
