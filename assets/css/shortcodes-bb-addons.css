@@ -7,8 +7,21 @@
  * @package     WebMan Amplifier
  * @subpackage  Shortcodes
  *
- * @since    1.1
- * @version  1.1
+ * @since    1.2.2
+ * @version  1.2.2
  */
+.fl-builder-lightbox .fl-lightbox {
+  width: 680px;
+}
 
-.fl-builder-lightbox .fl-lightbox{width:680px}.fl-builder-settings-tab{width:100%}.mce-container div[id^="wm_shortcodes_list_short_id"],.mce-container div[id^="wm_shortcodes_list_id"]{display:none}.mce-container div[id^="wm_shortcodes_list_short_id"]{display:block}
+.fl-builder-settings-tab {
+  width: 100%;
+}
+
+.mce-container div[id^="wm_shortcodes_list_short_id"],
+.mce-container div[id^="wm_shortcodes_list_id"] {
+  display: none;
+}
+.mce-container div[id^="wm_shortcodes_list_short_id"] {
+  display: block;
+}

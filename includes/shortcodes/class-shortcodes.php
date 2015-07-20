@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @subpackage  Shortcodes
  *
  * @since    1.0
- * @version  1.2
+ * @version  1.2.2
  */
 if ( ! class_exists( 'WM_Shortcodes' ) ) {
 
@@ -123,7 +123,7 @@ if ( ! class_exists( 'WM_Shortcodes' ) ) {
 			 * Shortcodes globals setup
 			 *
 			 * @since    1.0
-			 * @version  1.1.6
+			 * @version  1.2.2
 			 *
 			 * @access  private
 			 */
@@ -308,14 +308,6 @@ if ( ! class_exists( 'WM_Shortcodes' ) ) {
 								}
 							}
 
-						//Set the setup array for shortcodes that can be replaced with "Style" button in visual editor
-							if (
-									isset( $definition['style'] )
-									&& is_array( $definition['style'] ) && ! empty( $definition['style'] )
-								) {
-								self::$codes['styles'] = array_merge( self::$codes['styles'], (array) $definition['style'] );
-							}
-
 						//Beaver Builder integration
 							if (
 									isset( $definition['bb_plugin'] )
@@ -352,7 +344,7 @@ if ( ! class_exists( 'WM_Shortcodes' ) ) {
 			 * Register styles and scripts
 			 *
 			 * @since    1.0
-			 * @version  1.2
+			 * @version  1.2.2
 			 *
 			 * @access   public
 			 */
@@ -363,8 +355,6 @@ if ( ! class_exists( 'WM_Shortcodes' ) ) {
 
 				//Styles
 					wp_register_style( 'wm-radio',                   WMAMP_ASSETS_URL . 'css/input-wm-radio.css',           array(), WMAMP_VERSION, 'screen' );
-					wp_register_style( 'wm-shortcodes',              WMAMP_ASSETS_URL . 'css/shortcodes.css',               array(), WMAMP_VERSION, 'screen' );
-					wp_register_style( 'wm-shortcodes-rtl',          WMAMP_ASSETS_URL . 'css/rtl-shortcodes.css',           array(), WMAMP_VERSION, 'screen' );
 					wp_register_style( 'wm-shortcodes-bb-addon',     WMAMP_ASSETS_URL . 'css/shortcodes-bb-addons.css',     array(), WMAMP_VERSION, 'screen' );
 					wp_register_style( 'wm-shortcodes-vc-addon',     WMAMP_ASSETS_URL . 'css/shortcodes-vc-addons.css',     array(), WMAMP_VERSION, 'screen' );
 					wp_register_style( 'wm-shortcodes-vc-addon-rtl', WMAMP_ASSETS_URL . 'css/rtl-shortcodes-vc-addons.css', array(), WMAMP_VERSION, 'screen' );
@@ -394,7 +384,7 @@ if ( ! class_exists( 'WM_Shortcodes' ) ) {
 			 * Enqueue frontend styles and scripts
 			 *
 			 * @since    1.0
-			 * @version  1.1.2
+			 * @version  1.2.2
 			 *
 			 * @access  public
 			 */
@@ -406,12 +396,6 @@ if ( ! class_exists( 'WM_Shortcodes' ) ) {
 				//Styles
 					if ( $icon_font_url ) {
 						wp_enqueue_style( 'wm-fonticons' );
-					}
-					if ( apply_filters( 'wmhook_shortcode_' . 'enqueue_shortcode_css', true ) ) {
-						wp_enqueue_style( 'wm-shortcodes' );
-						if ( is_rtl() ) {
-							wp_enqueue_style( 'wm-shortcodes-rtl' );
-						}
 					}
 
 					//Visual Composer - deregister frontend styles
@@ -1157,69 +1141,160 @@ function wma_shortcodes() {
 		/**
 		 * Custom page builder input field: wm_radio
 		 *
-		 * @since  1.1
+		 * @since    1.1
+		 * @version  1.2.2
 		 *
 		 * @param  string $name
 		 * @param  string $value
 		 * @param  array  $field
 		 */
-		if ( ! function_exists( 'wma_custom_field_wm_radio' ) ) {
-			function wma_custom_field_wm_radio( $name, $value, $field ) {
-				//Helper variables
-					$output = $block_class = '';
+		function wma_custom_field_wm_radio( $name, $value, $field ) {
 
-					$i = 0;
+			// Pre
 
-					if ( ! isset( $field['custom'] ) || ! $field['custom'] ) {
-						$field['custom'] = '';
-					} else {
-						$block_class .= ' custom-label';
+				$pre = apply_filters( 'wmhook_wmamp_fn_wma_custom_field_wm_radio_pre', false, $name, $value, $field );
+
+				if ( false !== $pre ) {
+					return $pre;
+				}
+
+
+			// Helper variables
+
+				$output = $block_class = '';
+
+				$i = 0;
+
+				if ( ! isset( $field['custom'] ) || ! $field['custom'] ) {
+					$field['custom'] = '';
+				} else {
+					$block_class .= ' custom-label';
+				}
+
+				$hide_radio = ( isset( $field['hide_radio'] ) && $field['hide_radio'] ) ? ( ' hide' ) : ( '' );
+
+				$field['inline'] = ( isset( $field['inline'] ) && $field['inline'] ) ? ( true ) : ( false );
+
+				if ( isset( $field['filter'] ) && $field['filter'] ) {
+					$field['filter'] = true;
+					$block_class .= ' filterable';
+				} else {
+					$field['filter'] = false;
+				}
+
+
+			// Processing
+
+				$output = '<div class="fl-wm-radio wm-radio-block' . esc_attr( $block_class ) . '">';
+
+				// Filter
+
+					if ( $field['filter'] ) {
+						$output .= '<div class="filter"><input type="text" value="" placeholder="' . esc_attr__( 'Filter: start typing...', 'wm_domain' ) . '" class="filter-text" /></div>';
 					}
-					$hide_radio = ( isset( $field['hide_radio'] ) && $field['hide_radio'] ) ? ( ' hide' ) : ( '' );
-					$field['inline'] = ( isset( $field['inline'] ) && $field['inline'] ) ? ( true ) : ( false );
 
-				//Preparing output
-					$output = '<div class="fl-wm-radio wm-radio-block' . $block_class . '">';
+				// Radio buttons
 
-					foreach ( $field['options'] as $option_value => $option ) {
-						$i++;
+					$output .= '<div class="radio-items">';
 
-						$checked = trim( checked( $value, $option_value, false ) . ' /' );
+						foreach ( $field['options'] as $option_value => $option ) {
 
-						$output .= ( ! $field['inline'] ) ? ( '<p class="input-item">' ) : ( '<span class="inline-radio input-item">' );
+							$i++;
 
-						if ( ! trim( $field['custom'] ) ) {
+							$output .= ( ! $field['inline'] ) ? ( '<p class="input-item radio-item"' ) : ( '<span class="inline-radio input-item radio-item"' );
+							$output .= ' data-value="' . esc_attr( $option_value ) . '">';
 
-							$output .= '<input type="radio" name="' . $name . '" id="' . $name . '-' . $i . '" value="' . $option_value . '" title="' . esc_attr( $option ) . '" class="wm-radio" ' . $checked . '> ';
-							$output .= '<label for="' . $name . '-' . $i . '">' . $option . '</label>';
+							$checked = trim( checked( $value, $option_value, false ) . ' /' );
 
-						} else {
+							if ( ! trim( $field['custom'] ) ) {
 
-							$output .= '<label for="' . $name . '-' . $i . '">' . trim( str_replace( array( '{{value}}', '{{name}}' ), array( $option_value, $option ), $field['custom'] ) ) . '</label>';
-							$output .= '<input type="radio" name="' . $name . '" id="' . $name . '-' . $i . '" value="' . $option_value . '" title="' . esc_attr( $option ) . '" class="wm-radio ' . $hide_radio . '" ' . $checked . '>';
+								$output .= '<input type="radio" name="' . esc_attr( $name ) . '" id="' . esc_attr( $name . '-' . $i ) . '" value="' . esc_attr( $option_value ) . '" title="' . esc_attr( $option ) . '" class="wm-radio" ' . $checked . '> ';
 
-						}
+								$output .= '<label for="' . esc_attr( $name . '-' . $i ) . '">' . $option . '</label>';
 
-						$output .= ( ! $field['inline'] ) ? ( '</p>' ) : ( '</span> ' );
-					} // /foreach
+							} else {
 
-					/**
-					 * ( function( $ ) {
-					 *   //Add "active" class for radio button items if custom label is used
-					 *     $( '.wm-radio-block.custom-label input:checked' ).parent( '.input-item' ).addClass( 'active' );
-					 *       $( '.wm-radio-block.custom-label input' ).on( 'change', function() {
-					 *       $( this ).parent( '.input-item' ).addClass( 'active' ).siblings( '.input-item' ).removeClass( 'active' );
-					 *     } );
-					 * } )( window.jQuery );
-					 */
+								$output .= '<label for="' . esc_attr( $name . '-' . $i ) . '">' . trim( str_replace(
+										array( '{{value}}', '{{name}}' ),
+										array( $option_value, $option ),
+										$field['custom']
+									) ) . '</label>';
 
-					$output .= '<script>(function(e){e(".wm-radio-block.custom-label input:checked").parent(".input-item").addClass("active");e(".wm-radio-block.custom-label input").on("change",function(){e(this).parent(".input-item").addClass("active").siblings(".input-item").removeClass("active")})})(window.jQuery)</script>';
+								$output .= '<input type="radio" name="' . esc_attr( $name ) . '" id="' . esc_attr( $name . '-' . $i ) . '" value="' . esc_attr( $option_value ) . '" title="' . esc_attr( $option ) . '" class="wm-radio ' . esc_attr( $hide_radio ) . '" ' . $checked . '>';
+
+							}
+
+							$output .= ( ! $field['inline'] ) ? ( '</p>' ) : ( '</span> ' );
+
+						} // /foreach
 
 					$output .= '</div>';
 
-				//Output
-					return $output;
-			}
+					// JavaScript
+
+						$output .= '<script>jQuery( function() {';
+
+							// Add "active" class to radio button items if custom label is used
+
+								$output .= "
+									jQuery( '.wm-radio-block.custom-label .radio-item' )
+										.find( 'input' )
+											.on( 'change', function() {
+
+												jQuery( this )
+													.parent( '.inline-radio' )
+														.addClass( 'active' )
+														.siblings( '.inline-radio' )
+															.removeClass( 'active' );
+
+											} )
+										.end()
+										.find( 'input:checked' )
+											.parent( '.inline-radio' )
+												.addClass( 'active' );
+									";
+
+							// Radio buttons filtering
+
+								if ( $field['filter'] ) {
+
+									$output .= "
+										jQuery( '.wm-radio-block.filterable .filter-text' )
+											.on( 'keyup', function() {
+
+												var search = jQuery( this ),
+												    text   = search.val();
+
+												search
+													.closest( '.filterable' )
+													.find( '.radio-item' )
+														.each( function() {
+
+															var item  = jQuery( this ),
+															    value = item.data( 'value' ).replace( 'icon', '' );
+
+															if ( -1 == value.indexOf( text ) ) {
+																item.hide();
+															} else {
+																item.show();
+															}
+
+														} );
+
+											} );
+										";
+
+								}
+
+						$output .= '} );</script>';
+
+				$output .= '</div>';
+
+
+			// Output
+
+				return $output;
+
 		} // /wma_custom_field_wm_radio
 
 
@@ -1424,5 +1499,3 @@ if ( wma_is_active_vc() ) {
 	} // /vc_theme_vc_column_inner
 
 } // /wma_is_active_vc() check
-
-?>
