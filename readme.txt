@@ -92,7 +92,7 @@ Please note that the plugin integrates an Isotope JavaScript filter. This script
 
 == Changelog ==
 
-Please see the [`CHANGELOG.md` file](https://github.com/webmandesign/webman-amplifier/blob/master/CHANGELOG.md) for details.
+Please see the [`changelog.md` file](https://github.com/webmandesign/webman-amplifier/blob/master/changelog.md) for details.
 
 == Upgrade Notice ==
 
