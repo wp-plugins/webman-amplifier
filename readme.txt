@@ -96,6 +96,9 @@ Please see the [`changelog.md` file](https://github.com/webmandesign/webman-ampl
 
 == Upgrade Notice ==
 
+= 1.2.4 =
+Fixing Visual Composer shortcodes layout issue (for Posts, Testimonials and Content Modules).
+
 = 1.2.3 =
 WordPress 4.3 support, redesigned metabox controls, accessibility improvements, improved shortcodes overriding, fixed issue with Visual Composer custom shortcode mapping via dashboard.
 
